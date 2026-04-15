@@ -17,7 +17,8 @@ import {
   Sparkles,
   Code,
   Globe,
-  MessageSquare
+  MessageSquare,
+  Bot
 } from "lucide-react";
 import { useRef } from "react";
 import { cn } from "./lib/utils";
@@ -44,7 +45,7 @@ const Navbar = () => (
     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
       <a href="#services" className="hover:text-white transition-colors">Услуги</a>
       <a href="#work" className="hover:text-white transition-colors">Работы</a>
-      <a href="#about" className="hover:text-white transition-colors">О нас</a>
+      <a href="#process" className="hover:text-white transition-colors">Процесс</a>
       <a href="#contact" className="hover:text-white transition-colors">Контакты</a>
     </div>
     <a href="#contact" className="px-5 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-accent transition-all hover:scale-105 active:scale-95 inline-block">
@@ -164,9 +165,9 @@ const Services = () => (
         delay={0.2}
       />
       <ServiceCard 
-        icon={Code} 
-        title="MLOps и Инфраструктура" 
-        description="Масштабируемая инфраструктура для обучения и развертывания моделей с высокой надежностью."
+        icon={Bot} 
+        title="Агенты и нейро-сотрудники" 
+        description="Создание автономных ИИ-агентов и цифровых сотрудников для автоматизации сложных бизнес-задач и рутины."
         delay={0.3}
       />
       <ServiceCard 
@@ -191,12 +192,15 @@ const Services = () => (
   </section>
 );
 
-const ProjectCard = ({ title, category, image }: { title: string, category: string, image: string }) => (
-  <motion.div 
+const ProjectCard = ({ title, category, image, link }: { title: string, category: string, image: string, link: string }) => (
+  <motion.a 
+    href={link}
+    target="_blank"
+    rel="noopener noreferrer"
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="relative aspect-[4/5] rounded-3xl overflow-hidden group cursor-pointer"
+    className="relative aspect-[4/5] rounded-3xl overflow-hidden group cursor-pointer block"
   >
     <img 
       src={image} 
@@ -209,10 +213,10 @@ const ProjectCard = ({ title, category, image }: { title: string, category: stri
       <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">{category}</p>
       <h3 className="text-2xl font-display font-bold mb-4">{title}</h3>
       <div className="flex items-center gap-2 text-sm font-medium text-white/50 group-hover:text-white transition-colors">
-        Смотреть кейс <ChevronRight className="w-4 h-4" />
+        Смотреть проект <ChevronRight className="w-4 h-4" />
       </div>
     </div>
-  </motion.div>
+  </motion.a>
 );
 
 const Work = () => (
@@ -228,20 +232,104 @@ const Work = () => (
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <ProjectCard 
-        title="Нейро-Коммерция" 
-        category="ИИ для E-commerce" 
-        image="https://picsum.photos/seed/ai1/800/1000"
+        title="AI Content Maker" 
+        category="Генерация контента" 
+        image="https://picsum.photos/seed/contentmaker/800/1000"
+        link="#"
       />
       <ProjectCard 
-        title="Aether Vision" 
-        category="Компьютерное зрение" 
-        image="https://picsum.photos/seed/ai2/800/1000"
+        title="Нейро-продавец" 
+        category="B2B Услуги для бизнеса" 
+        image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80"
+        link="#"
       />
       <ProjectCard 
-        title="Synthetix Lab" 
-        category="Генеративные модели" 
-        image="https://picsum.photos/seed/ai3/800/1000"
+        title="SellSmart - AI Аукцион" 
+        category="Умные торги" 
+        image="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=800&q=80"
+        link="#"
       />
+    </div>
+  </section>
+);
+
+const ProcessStep = ({ number, title, description, duration }: { number: string, title: string, description: string, duration: string }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="relative flex gap-6 md:gap-10 group"
+  >
+    {/* Timeline line */}
+    <div className="absolute left-[15px] md:left-[39px] top-14 bottom-[-2rem] w-[2px] bg-white/5 group-last:hidden" />
+    
+    {/* Number indicator */}
+    <div className="relative z-10 flex-shrink-0 w-[32px] h-[32px] md:w-[80px] md:h-[80px] rounded-full md:rounded-2xl glass flex items-center justify-center text-accent font-display font-bold text-sm md:text-2xl bg-bg">
+      {number}
+    </div>
+
+    {/* Content */}
+    <div className="flex-grow pb-12 md:pb-16 pt-1 md:pt-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+        <h3 className="text-xl md:text-2xl font-display font-bold">{title}</h3>
+        <span className="text-accent text-xs md:text-sm font-mono bg-accent/10 px-3 py-1 rounded-full w-fit whitespace-nowrap">
+          {duration}
+        </span>
+      </div>
+      <p className="text-white/50 leading-relaxed text-sm md:text-base">{description}</p>
+    </div>
+  </motion.div>
+);
+
+const Process = () => (
+  <section id="process" className="py-32 px-6 max-w-7xl mx-auto">
+    <div className="flex flex-col lg:flex-row gap-16">
+      <div className="lg:w-1/3 lg:sticky lg:top-32 h-fit">
+        <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">ПРОЦЕСС РАЗРАБОТКИ</h2>
+        <p className="text-white/50 mb-12">Прозрачный процесс, предсказуемые сроки и фиксированный бюджет для вашего спокойствия.</p>
+        
+        <div className="space-y-6">
+          <div className="glass p-6 rounded-2xl border-l-4 border-l-accent">
+            <div className="text-sm text-white/50 mb-1">Средний бюджет</div>
+            <div className="text-3xl font-display font-bold">от 150 000 ₽</div>
+            <div className="text-sm text-white/40 mt-2">Зависит от сложности ИИ-моделей и интеграций</div>
+          </div>
+          <div className="glass p-6 rounded-2xl border-l-4 border-l-accent-purple">
+            <div className="text-sm text-white/50 mb-1">Сроки реализации</div>
+            <div className="text-3xl font-display font-bold">1 — 3 месяца</div>
+            <div className="text-sm text-white/40 mt-2">От первой встречи до запуска MVP</div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="lg:w-2/3">
+        <div className="space-y-0">
+          <ProcessStep 
+            number="01"
+            title="Аналитика и стратегия"
+            duration="1-2 недели"
+            description="Погружаемся в бизнес-процессы, определяем участки, которые решит ИИ. Формируем техническое задание, подбираем оптимальные модели (LLM, CV и др.) и утверждаем архитектуру."
+          />
+          <ProcessStep 
+            number="02"
+            title="Прототипирование (MVP)"
+            duration="1-2 недели"
+            description="Создаем базовую версию системы для проверки гипотез. Обучаем или дообучаем (fine-tuning) модели на ваших данных, настраиваем промпты и базовый интерфейс."
+          />
+          <ProcessStep 
+            number="03"
+            title="Разработка и интеграция"
+            duration="2-4 недель"
+            description="Полноценная разработка продукта. Интегрируем ИИ-ядро с вашими текущими CRM/ERP системами, настраиваем безопасность данных и масштабируемую инфраструктуру (MLOps)."
+          />
+          <ProcessStep 
+            number="04"
+            title="Тестирование и запуск"
+            duration="1-2 недели"
+            description="Нагрузочное тестирование, проверка безопасности (red teaming) и устранение галлюцинаций моделей. Плавный релиз и обучение вашей команды работе с новой системой."
+          />
+        </div>
+      </div>
     </div>
   </section>
 );
@@ -305,6 +393,7 @@ export default function App() {
         <Hero />
         <Services />
         <Work />
+        <Process />
         
         {/* CTA Section */}
         <section id="contact" className="py-32 px-6">
