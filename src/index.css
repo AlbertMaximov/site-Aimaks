@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --color-bg: #050505;
+  --color-accent: #00f2ff;
+  --color-accent-purple: #7000ff;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: white;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(to right, #fff, #a1a1a1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-accent-gradient {
+    background: linear-gradient(to right, var(--color-accent), var(--color-accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
