@@ -6,8 +6,8 @@
   --font-display: "Space Grotesk", sans-serif;
   
   --color-bg: #050505;
-  --color-accent: #00f2ff;
-  --color-accent-purple: #7000ff;
+  --color-accent: #2563EB;
+  --color-accent-purple: #1E40AF;
 }
 
 @layer base {
@@ -15,8 +15,8 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--color-bg);
-    color: white;
+    background-color: transparent;
+    color: #0f172a;
     font-family: var(--font-sans);
     overflow-x: hidden;
   }
@@ -24,19 +24,21 @@
 
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
   }
   
   .text-gradient {
-    background: linear-gradient(to right, #fff, #a1a1a1);
+    background: linear-gradient(to right, #0f172a, #475569);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .text-accent-gradient {
-    background: linear-gradient(to right, var(--color-accent), var(--color-accent-purple));
+    background: linear-gradient(to right, #1E40AF, #3B82F6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
