@@ -20,8 +20,9 @@ import {
   MessageSquare,
   Bot
 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { cn } from "./lib/utils";
+import { ProjectSlider } from "./components/ProjectSlider";
 
 const Logo = () => (
   <svg width="36" height="36" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
@@ -188,7 +189,7 @@ const Services = () => (
   </section>
 );
 
-const ProjectCard = ({ title, category, image, link }: { title: string, category: string, image: string, link: string }) => (
+const ProjectCard = ({ title, category, projectId, link }: { title: string, category: string, projectId: string, link: string }) => (
   <motion.a 
     href={link}
     target="_blank"
@@ -198,12 +199,9 @@ const ProjectCard = ({ title, category, image, link }: { title: string, category
     viewport={{ once: true }}
     className="relative aspect-[4/5] rounded-3xl overflow-hidden group cursor-pointer block"
   >
-    <img 
-      src={image} 
-      alt={title} 
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-      referrerPolicy="no-referrer"
-    />
+    <div className="absolute inset-0 w-full h-full">
+      <ProjectSlider projectId={projectId} />
+    </div>
     <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
     <div className="absolute bottom-0 left-0 p-8 w-full">
       <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">{category}</p>
@@ -230,20 +228,20 @@ const Work = () => (
       <ProjectCard 
         title="AI Content Maker" 
         category="Генерация контента" 
-        image="https://picsum.photos/seed/contentmaker/800/1000"
-        link="#"
+        projectId="AIContentMaker"
+        link="https://aicontent.aimaks.ru"
       />
       <ProjectCard 
         title="Нейро-продавец" 
         category="B2B Услуги для бизнеса" 
-        image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80"
-        link="#"
+        projectId="NeuroSeller"
+        link="https://b2bsale.aimaks.ru"
       />
       <ProjectCard 
         title="SellSmart - AI Аукцион" 
         category="Умные торги" 
-        image="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=800&q=80"
-        link="#"
+        projectId="SellSmart"
+        link="https://auction.aimaks.ru"
       />
     </div>
   </section>
@@ -330,7 +328,59 @@ const Process = () => (
   </section>
 );
 
-const Footer = () => (
+const PrivacyPolicyModal = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold font-display">Политика конфиденциальности</h2>
+        <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full">
+          ✕
+        </button>
+      </div>
+      <div className="prose prose-sm text-slate-900/80">
+        <p>Дата последнего обновления: 9 июня 2026 г.</p>
+        <p>Настоящая Политика конфиденциальности описывает, как мы собираем, используем и защищаем персональные данные пользователей при использовании сервисов Aimaks.</p>
+        <h3 className="font-bold mt-4 mb-2">1. Сбор данных</h3>
+        <p>Мы собираем только те данные, которые вы добровольно предоставляете через формы на нашем сайте (имя, email, телефон, Telegram, краткое описание проекта). Эти данные используются исключительно для связи с вами и обсуждения потенциального сотрудничества.</p>
+        <h3 className="font-bold mt-4 mb-2">2. Использование данных</h3>
+        <p>Предоставляя нам свои персональные данные, вы соглашаетесь на их обработку в целях оказания услуг, информирования о наших продуктах и предложениях, а также для выполнения наших договорных обязательств.</p>
+        <h3 className="font-bold mt-4 mb-2">3. Защита данных</h3>
+        <p>Мы принимаем все необходимые технические и организационные меры для защиты вашей информации от несанкционированного доступа, изменения или раскрытия. Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законодательством РФ.</p>
+        <h3 className="font-bold mt-4 mb-2">4. Ваши права</h3>
+        <p>Вы имеете право отозвать свое согласие на обработку персональных данных в любое время, направив нам соответствующий запрос по адресу электронной почты info@aimaks.ru.</p>
+        <p>Использование нашего сайта означает ваше полное согласие с настоящей Политикой конфиденциальности.</p>
+      </div>
+    </div>
+  </div>
+);
+
+const TermsOfUseModal = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold font-display">Условия использования</h2>
+        <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full">
+          ✕
+        </button>
+      </div>
+      <div className="prose prose-sm text-slate-900/80">
+        <p>Дата последнего обновления: 9 июня 2026 г.</p>
+        <h3 className="font-bold mt-4 mb-2">1. Общие положения</h3>
+        <p>Использование настоящего сайта означает согласие с данными Условиями. Если вы не согласны с ними, пожалуйста, покиньте сайт.</p>
+        <h3 className="font-bold mt-4 mb-2">2. Интеллектуальная собственность</h3>
+        <p>Все права на контент, дизайн и программное обеспечение сайта принадлежат Aimaks. Копирование без согласия запрещено.</p>
+        <h3 className="font-bold mt-4 mb-2">3. Отказ от ответственности</h3>
+        <p>Сервисы предоставляются "как есть". Aimaks не несет ответственности за любые прямые или косвенные убытки, возникшие в результате использования сайта.</p>
+        <h3 className="font-bold mt-4 mb-2">4. Изменения условий</h3>
+        <p>Aimaks оставляет за собой право вносить изменения в данные Условия в любое время без уведомления.</p>
+        <h3 className="font-bold mt-4 mb-2">5. Применимое право</h3>
+        <p>Все споры решаются в соответствии с законодательством Российской Федерации.</p>
+      </div>
+    </div>
+  </div>
+);
+
+const Footer = ({ onOpenPrivacy, onOpenTerms }: { onOpenPrivacy: () => void, onOpenTerms: () => void }) => (
   <footer className="py-20 px-6 border-t border-slate-900/5">
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
       <div className="col-span-1 md:col-span-2">
@@ -354,23 +404,46 @@ const Footer = () => (
       <div>
         <h4 className="font-display font-bold mb-6">КОНТАКТЫ</h4>
         <ul className="space-y-4 text-sm text-slate-900/70">
-          <li>hello@aimaks.studio</li>
+          <li>info@aimaks.ru</li>
           <li>Москва, Россия</li>
-          <li>+7 (999) 000-00-00</li>
+          <li>+7 937 3828282</li>
         </ul>
       </div>
     </div>
     <div className="max-w-7xl mx-auto pt-8 border-t border-slate-900/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-900/50">
       <p>© 2026 Aimaks. Все права защищены.</p>
       <div className="flex gap-8">
-        <a href="#" className="hover:text-slate-900 transition-colors">Политика конфиденциальности</a>
-        <a href="#" className="hover:text-slate-900 transition-colors">Условия использования</a>
+        <button onClick={onOpenPrivacy} className="hover:text-slate-900 transition-colors">Политика конфиденциальности</button>
+        <button onClick={onOpenTerms} className="hover:text-slate-900 transition-colors">Условия использования</button>
       </div>
     </div>
   </footer>
 );
 
 export default function App() {
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('submitting');
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) setStatus('success');
+      else setStatus('idle');
+    } catch (err) {
+      console.error(err);
+      setStatus('idle');
+    }
+  };
   return (
     <div className="min-h-screen selection:bg-accent selection:text-black relative">
       {/* Background Image Setup */}
@@ -396,14 +469,17 @@ export default function App() {
               Оставьте заявку, и наша команда свяжется с вами для обсуждения проекта.
             </p>
             
-            <form className="max-w-2xl mx-auto text-left space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="max-w-2xl mx-auto text-left space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-900/90 ml-1">Имя <span className="text-accent">*</span></label>
                   <input 
                     type="text" 
+                    name="name"
                     placeholder="Ваше имя" 
                     required
+                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                     className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                   />
                 </div>
@@ -411,8 +487,11 @@ export default function App() {
                   <label className="text-sm font-medium text-slate-900/90 ml-1">Email <span className="text-accent">*</span></label>
                   <input 
                     type="email" 
+                    name="email"
                     placeholder="ваш@email.com" 
                     required
+                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                     className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                   />
                 </div>
@@ -420,8 +499,11 @@ export default function App() {
                   <label className="text-sm font-medium text-slate-900/90 ml-1">Телефон <span className="text-accent">*</span></label>
                   <input 
                     type="tel" 
+                    name="phone"
                     placeholder="+7 (999) 000-00-00" 
                     required
+                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                     className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                   />
                 </div>
@@ -429,6 +511,7 @@ export default function App() {
                   <label className="text-sm font-medium text-slate-900/90 ml-1">Telegram</label>
                   <input 
                     type="text" 
+                    name="telegram"
                     placeholder="@ваш_ник" 
                     className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                   />
@@ -438,21 +521,25 @@ export default function App() {
                 <label className="text-sm font-medium text-slate-900/90 ml-1">О проекте (кратко)</label>
                 <textarea 
                   rows={3} 
+                  name="description"
                   placeholder="Опишите вашу задачу..." 
                   className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
                 ></textarea>
               </div>
               <button 
                 type="submit" 
-                className="w-full px-12 py-4 mt-4 bg-accent text-black font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
+                disabled={status === 'submitting'}
+                className="w-full px-12 py-4 mt-4 bg-accent text-black font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)] disabled:opacity-50"
               >
-                Отправить заявку
+                {status === 'submitting' ? 'Отправка...' : status === 'success' ? 'Заявка отправлена!' : 'Отправить заявку'}
               </button>
             </form>
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer onOpenPrivacy={() => setShowPrivacyPolicy(true)} onOpenTerms={() => setShowTerms(true)} />
+      {showPrivacyPolicy && <PrivacyPolicyModal onClose={() => setShowPrivacyPolicy(false)} />}
+      {showTerms && <TermsOfUseModal onClose={() => setShowTerms(false)} />}
     </div>
   );
 }
