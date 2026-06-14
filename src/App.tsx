@@ -194,14 +194,13 @@ const ProjectCard = ({ title, category, projectId, link, advantages, onOpenModal
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="relative aspect-[4/5] rounded-3xl overflow-hidden group cursor-pointer block bg-slate-100"
+    className="rounded-3xl overflow-hidden group cursor-pointer block bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
     onClick={onOpenModal}
   >
-    <div className="absolute inset-0 w-full h-full bg-slate-200">
-      <img src={`/projects/${projectId}/1.png`} alt={title} className="w-full h-full object-cover" />
+    <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100">
+      <img src={`/projects/${projectId}/1.png`} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
     </div>
-    <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-    <div className="absolute bottom-0 left-0 p-8 w-full">
+    <div className="p-8">
       <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">{category}</p>
       <h3 className="text-2xl font-display font-bold mb-4">{title}</h3>
       <ul className="mb-6 space-y-2">
@@ -216,10 +215,10 @@ const ProjectCard = ({ title, category, projectId, link, advantages, onOpenModal
         href={link} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-slate-900 transition-colors"
+        className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-accent transition-colors"
         onClick={e => e.stopPropagation()}
       >
-        Смотреть проект <ChevronRight className="w-4 h-4" />
+        Смотреть фото проекта <ChevronRight className="w-4 h-4" />
       </a>
     </div>
   </motion.div>
