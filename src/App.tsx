@@ -197,7 +197,7 @@ const ProjectCard = ({ title, category, projectId, link, advantages, onOpenModal
     className="rounded-3xl overflow-hidden group cursor-pointer block bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
     onClick={onOpenModal}
   >
-    <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100">
+    <div className="aspect-video w-full overflow-hidden bg-slate-100">
       <img src={`/projects/${projectId}/1.png`} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
     </div>
     <div className="p-8">
