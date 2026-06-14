@@ -22,10 +22,10 @@ import {
 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { cn } from "./lib/utils";
-import { ProjectSlider } from "./components/ProjectSlider";
+import { ProjectModal } from "./components/ProjectModal";
 
 const Logo = () => (
-  <svg width="36" height="36" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+<svg width="36" height="36" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
     <polygon points="15,90 35,90 55,20 35,20" fill="#0056B3" />
     <polygon points="50,90 70,90 90,20 70,20" fill="#0056B3" />
     <polygon points="90,20 110,20 110,90 90,90" fill="#0056B3" />
@@ -189,18 +189,16 @@ const Services = () => (
   </section>
 );
 
-const ProjectCard = ({ title, category, projectId, link, advantages }: { title: string, category: string, projectId: string, link: string, advantages: string[] }) => (
-  <motion.a 
-    href={link}
-    target="_blank"
-    rel="noopener noreferrer"
+const ProjectCard = ({ title, category, projectId, link, advantages, onOpenModal }: { title: string, category: string, projectId: string, link: string, advantages: string[], onOpenModal: () => void }) => (
+  <motion.div 
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="relative aspect-[4/5] rounded-3xl overflow-hidden group cursor-pointer block"
+    className="relative aspect-[4/5] rounded-3xl overflow-hidden group cursor-pointer block bg-slate-100"
+    onClick={onOpenModal}
   >
-    <div className="absolute inset-0 w-full h-full">
-      <ProjectSlider projectId={projectId} />
+    <div className="absolute inset-0 w-full h-full bg-slate-200">
+      <img src={`/projects/${projectId}/1.png`} alt={title} className="w-full h-full object-cover" />
     </div>
     <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
     <div className="absolute bottom-0 left-0 p-8 w-full">
@@ -214,49 +212,68 @@ const ProjectCard = ({ title, category, projectId, link, advantages }: { title: 
           </li>
         ))}
       </ul>
-      <div className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-slate-900 transition-colors">
+      <a 
+        href={link} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-slate-900 transition-colors"
+        onClick={e => e.stopPropagation()}
+      >
         Смотреть проект <ChevronRight className="w-4 h-4" />
-      </div>
+      </a>
     </div>
-  </motion.a>
+  </motion.div>
 );
 
-const Work = () => (
-  <section id="work" className="py-32 px-6 max-w-7xl mx-auto">
-    <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-      <div>
-        <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">ИЗБРАННЫЕ РАБОТЫ</h2>
-        <p className="text-slate-900/70 max-w-xl">Взгляд на интеллектуальные системы, которые мы создали для лидеров индустрии.</p>
+const Work = () => {
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  return (
+    <section id="work" className="py-32 px-6 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+        <div>
+          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">ИЗБРАННЫЕ РАБОТЫ</h2>
+          <p className="text-slate-900/70 max-w-xl">Взгляд на интеллектуальные системы, которые мы создали для лидеров индустрии.</p>
+        </div>
+        <button className="px-8 py-4 glass rounded-xl font-bold hover:bg-slate-900/10 transition-all">
+          Все проекты
+        </button>
       </div>
-      <button className="px-8 py-4 glass rounded-xl font-bold hover:bg-slate-900/10 transition-all">
-        Все проекты
-      </button>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <ProjectCard 
-        title="AI Content Maker" 
-        category="Генерация контента" 
-        projectId="AIContentMaker"
-        link="https://aicontent.aimaks.ru"
-        advantages={["Автоматизация генерации контента", "Снижение маркетинговых затрат", "Рост вовлеченности аудитории"]}
-      />
-      <ProjectCard 
-        title="Нейро-продавец" 
-        category="B2B Услуги для бизнеса" 
-        projectId="NeuroSeller"
-        link="https://b2bsale.aimaks.ru"
-        advantages={["Определение решений для бизнеса", "Повышение конверсии продаж", "Анализ покупательского поведения"]}
-      />
-      <ProjectCard 
-        title="SellSmart - AI Аукцион" 
-        category="Умные торги" 
-        projectId="SellSmart"
-        link="https://auction.aimaks.ru"
-        advantages={["Динамическое ценообразование", "Автоматизация управления запасами", "Точное прогнозирование спроса"]}
-      />
-    </div>
-  </section>
-);
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <ProjectCard 
+          title="AI Content Maker" 
+          category="Генерация контента" 
+          projectId="AIContentMaker"
+          link="https://aicontent.aimaks.ru"
+          advantages={["Автоматизация генерации контента", "Снижение маркетинговых затрат", "Рост вовлеченности аудитории"]}
+          onOpenModal={() => setSelectedProjectId("AIContentMaker")}
+        />
+        <ProjectCard 
+          title="Нейро-продавец" 
+          category="B2B Услуги для бизнеса" 
+          projectId="NeuroSeller"
+          link="https://b2bsale.aimaks.ru"
+          advantages={["Определение решений для бизнеса", "Повышение конверсии продаж", "Анализ покупательского поведения"]}
+          onOpenModal={() => setSelectedProjectId("NeuroSeller")}
+        />
+        <ProjectCard 
+          title="SellSmart - AI Аукцион" 
+          category="Умные торги" 
+          projectId="SellSmart"
+          link="https://auction.aimaks.ru"
+          advantages={["Динамическое ценообразование", "Автоматизация управления запасами", "Точное прогнозирование спроса"]}
+          onOpenModal={() => setSelectedProjectId("SellSmart")}
+        />
+      </div>
+      {selectedProjectId && (
+        <ProjectModal 
+          projectId={selectedProjectId} 
+          isOpen={!!selectedProjectId} 
+          onClose={() => setSelectedProjectId(null)} 
+        />
+      )}
+    </section>
+  );
+};
 
 const ProcessStep = ({ number, title, description, duration }: { number: string, title: string, description: string, duration: string }) => (
   <motion.div 
@@ -495,7 +512,11 @@ export default function App() {
                       name="name"
                       placeholder="Ваше имя" 
                       required
-                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                      onInvalid={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        if (target.validity.valueMissing) target.setCustomValidity('Пожалуйста, заполните это поле');
+                        else target.setCustomValidity('Пожалуйста, исправьте ошибку');
+                      }}
                       onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                       className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                     />
@@ -503,11 +524,21 @@ export default function App() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-900/90 ml-1">Email <span className="text-accent">*</span></label>
                     <input 
-                      type="email" 
+                      type="text" 
                       name="email"
                       placeholder="ваш@email.com" 
                       required
-                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                      onInvalid={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        if (target.validity.valueMissing) {
+                          target.setCustomValidity('Пожалуйста, заполните это поле');
+                        } else if (target.validity.patternMismatch) {
+                          target.setCustomValidity('Пожалуйста, введите корректный email');
+                        } else {
+                          target.setCustomValidity('Пожалуйста, введите корректные данные');
+                        }
+                      }}
                       onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                       className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                     />
@@ -519,7 +550,11 @@ export default function App() {
                       name="phone"
                       placeholder="+7 (999) 000-00-00" 
                       required
-                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                      onInvalid={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        if (target.validity.valueMissing) target.setCustomValidity('Пожалуйста, заполните это поле');
+                        else target.setCustomValidity('Пожалуйста, исправьте ошибку');
+                      }}
                       onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                       className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                     />
