@@ -503,7 +503,7 @@ export default function App() {
                  <p className="text-slate-900/70 mt-4 text-lg">Спасибо за обращение. Мы скоро с вами свяжемся.</p>
               </div>
             ) : (
-              <form className="max-w-2xl mx-auto text-left space-y-6" onSubmit={handleSubmit}>
+              <form className="max-w-2xl mx-auto text-left space-y-6" onSubmit={handleSubmit} noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-900/90 ml-1">Имя <span className="text-accent">*</span></label>
