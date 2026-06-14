@@ -13,13 +13,15 @@ export const ProjectSlider = ({ projectId }: { projectId: string }) => {
   useEffect(() => {
     fetch(`/api/projects/${projectId}/images`)
       .then(res => res.json())
-      .then(data => setImages(data))
-      .catch(err => console.error("Error fetching images:", err));
+      .then(data => {
+        const placeholders = Array(Math.max(0, 3 - data.length)).fill('https://placehold.co/600x800?text=Placeholder');
+        setImages([...data, ...placeholders]);
+      })
+      .catch(err => {
+        console.error("Error fetching images:", err);
+        setImages(Array(3).fill('https://placehold.co/600x800?text=Placeholder'));
+      });
   }, [projectId]);
-
-  if (images.length === 0) {
-    return <div className="w-full h-full bg-slate-200 animate-pulse rounded-3xl" />;
-  }
 
   const nextImage = () => setCurrentIndex((prev) => (prev + 1) % images.length);
   const prevImage = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
@@ -46,6 +48,17 @@ export const ProjectSlider = ({ projectId }: { projectId: string }) => {
           <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity">
             <ChevronRight size={20} />
           </button>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  currentIndex === index ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/80'
+                }`}
+              />
+            ))}
+          </div>
         </>
       )}
     </div>

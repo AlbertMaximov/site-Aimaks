@@ -20,7 +20,7 @@ import {
   MessageSquare,
   Bot
 } from "lucide-react";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { cn } from "./lib/utils";
 import { ProjectSlider } from "./components/ProjectSlider";
 
@@ -189,7 +189,7 @@ const Services = () => (
   </section>
 );
 
-const ProjectCard = ({ title, category, projectId, link }: { title: string, category: string, projectId: string, link: string }) => (
+const ProjectCard = ({ title, category, projectId, link, advantages }: { title: string, category: string, projectId: string, link: string, advantages: string[] }) => (
   <motion.a 
     href={link}
     target="_blank"
@@ -206,6 +206,14 @@ const ProjectCard = ({ title, category, projectId, link }: { title: string, cate
     <div className="absolute bottom-0 left-0 p-8 w-full">
       <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">{category}</p>
       <h3 className="text-2xl font-display font-bold mb-4">{title}</h3>
+      <ul className="mb-6 space-y-2">
+        {advantages.map((adv, i) => (
+          <li key={i} className="flex items-center text-sm text-slate-900/80">
+            <span className="w-1.5 h-1.5 bg-accent rounded-full mr-2" />
+            {adv}
+          </li>
+        ))}
+      </ul>
       <div className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-slate-900 transition-colors">
         Смотреть проект <ChevronRight className="w-4 h-4" />
       </div>
@@ -230,18 +238,21 @@ const Work = () => (
         category="Генерация контента" 
         projectId="AIContentMaker"
         link="https://aicontent.aimaks.ru"
+        advantages={["Автоматизация генерации контента", "Снижение маркетинговых затрат", "Рост вовлеченности аудитории"]}
       />
       <ProjectCard 
         title="Нейро-продавец" 
         category="B2B Услуги для бизнеса" 
         projectId="NeuroSeller"
         link="https://b2bsale.aimaks.ru"
+        advantages={["Определение решений для бизнеса", "Повышение конверсии продаж", "Анализ покупательского поведения"]}
       />
       <ProjectCard 
         title="SellSmart - AI Аукцион" 
         category="Умные торги" 
         projectId="SellSmart"
         link="https://auction.aimaks.ru"
+        advantages={["Динамическое ценообразование", "Автоматизация управления запасами", "Точное прогнозирование спроса"]}
       />
     </div>
   </section>
@@ -469,71 +480,78 @@ export default function App() {
               Оставьте заявку, и наша команда свяжется с вами для обсуждения проекта.
             </p>
             
-            <form className="max-w-2xl mx-auto text-left space-y-6" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900/90 ml-1">Имя <span className="text-accent">*</span></label>
-                  <input 
-                    type="text" 
-                    name="name"
-                    placeholder="Ваше имя" 
-                    required
-                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
-                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
-                    className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900/90 ml-1">Email <span className="text-accent">*</span></label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    placeholder="ваш@email.com" 
-                    required
-                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
-                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
-                    className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900/90 ml-1">Телефон <span className="text-accent">*</span></label>
-                  <input 
-                    type="tel" 
-                    name="phone"
-                    placeholder="+7 (999) 000-00-00" 
-                    required
-                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
-                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
-                    className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900/90 ml-1">Telegram</label>
-                  <input 
-                    type="text" 
-                    name="telegram"
-                    placeholder="@ваш_ник" 
-                    className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-                  />
-                </div>
+            {status === 'success' ? (
+              <div className="text-center py-16 glass rounded-2xl">
+                 <h3 className="text-3xl font-bold font-display text-accent">Заявка отправлена!</h3>
+                 <p className="text-slate-900/70 mt-4 text-lg">Спасибо за обращение. Мы скоро с вами свяжемся.</p>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900/90 ml-1">О проекте (кратко)</label>
-                <textarea 
-                  rows={3} 
-                  name="description"
-                  placeholder="Опишите вашу задачу..." 
-                  className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
-                ></textarea>
-              </div>
-              <button 
-                type="submit" 
-                disabled={status === 'submitting'}
-                className="w-full px-12 py-4 mt-4 bg-accent text-black font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)] disabled:opacity-50"
-              >
-                {status === 'submitting' ? 'Отправка...' : status === 'success' ? 'Заявка отправлена!' : 'Отправить заявку'}
-              </button>
-            </form>
+            ) : (
+              <form className="max-w-2xl mx-auto text-left space-y-6" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-900/90 ml-1">Имя <span className="text-accent">*</span></label>
+                    <input 
+                      type="text" 
+                      name="name"
+                      placeholder="Ваше имя" 
+                      required
+                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
+                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-900/90 ml-1">Email <span className="text-accent">*</span></label>
+                    <input 
+                      type="email" 
+                      name="email"
+                      placeholder="ваш@email.com" 
+                      required
+                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
+                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-900/90 ml-1">Телефон <span className="text-accent">*</span></label>
+                    <input 
+                      type="tel" 
+                      name="phone"
+                      placeholder="+7 (999) 000-00-00" 
+                      required
+                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле')}
+                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
+                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-900/90 ml-1">Telegram</label>
+                    <input 
+                      type="text" 
+                      name="telegram"
+                      placeholder="@ваш_ник" 
+                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-900/90 ml-1">О проекте (кратко)</label>
+                  <textarea 
+                    rows={3} 
+                    name="description"
+                    placeholder="Опишите вашу задачу..." 
+                    className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
+                  ></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={status === 'submitting'}
+                  className="w-full px-12 py-4 mt-4 bg-accent text-black font-bold rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)] disabled:opacity-50"
+                >
+                  {status === 'submitting' ? 'Отправка...' : 'Отправить заявку'}
+                </button>
+              </form>
+            )}
           </div>
         </section>
       </main>
