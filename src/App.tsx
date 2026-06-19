@@ -194,7 +194,7 @@ const ProjectCard = ({ title, category, projectId, link, advantages, onOpenModal
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="rounded-3xl overflow-hidden group cursor-pointer block bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
+    className="flex flex-col rounded-3xl overflow-hidden group cursor-pointer block bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
     onClick={onOpenModal}
   >
     <div className="aspect-video w-full overflow-hidden bg-slate-100">
