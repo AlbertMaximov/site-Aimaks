@@ -189,17 +189,16 @@ const Services = () => (
   </section>
 );
 
-const ProjectCard = ({ title, category, projectId, link, advantages, onOpenModal }: { title: string, category: string, projectId: string, link: string, advantages: string[], onOpenModal: () => void }) => (
+const ProjectCard = ({ title, category, projectId, link, advantages }: { title: string, category: string, projectId: string, link: string, advantages: string[] }) => (
   <motion.div 
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="flex flex-col rounded-3xl overflow-hidden group cursor-pointer block bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
-    onClick={onOpenModal}
+    className="flex flex-col rounded-3xl overflow-hidden group cursor-pointer bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
   >
-    <div className="aspect-video w-full overflow-hidden bg-slate-100">
+    <a href={link} target="_blank" rel="noopener noreferrer" className="aspect-video w-full overflow-hidden bg-slate-100 block">
       <img src={`/projects/${projectId}/1.png`} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-    </div>
+    </a>
     <div className="p-8">
       <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">{category}</p>
       <h3 className="text-2xl font-display font-bold mb-4">{title}</h3>

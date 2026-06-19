@@ -18,13 +18,6 @@ export const ProjectModal = ({ projectId, isOpen, onClose }: ProjectModalProps) 
             ✕
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Using a placeholder for now since we don't know the actual image paths besides what was defined before. 
-                Previously, ProjectScreenshots used /api/projects/${projectId}/images */}
-            <img src={`/projects/${projectId}/1.png`} alt="1" className="w-full h-auto rounded-xl" />
-            <img src={`/projects/${projectId}/2.png`} alt="2" className="w-full h-auto rounded-xl" />
-            <img src={`/projects/${projectId}/3.png`} alt="3" className="w-full h-auto rounded-xl" />
-        </div>
       </div>
     </div>
   );
