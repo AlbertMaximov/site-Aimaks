@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { cn } from "./lib/utils";
-import { ProjectModal } from "./components/ProjectModal";
 
 const Logo = () => (
 <svg width="36" height="36" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
@@ -190,15 +189,18 @@ const Services = () => (
 );
 
 const ProjectCard = ({ title, category, projectId, link, advantages }: { title: string, category: string, projectId: string, link: string, advantages: string[] }) => (
-  <motion.div 
+  <motion.a 
+    href={link}
+    target="_blank"
+    rel="noopener noreferrer"
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
     className="flex flex-col rounded-3xl overflow-hidden group cursor-pointer bg-white border border-slate-900/5 shadow-sm hover:shadow-lg transition-all"
   >
-    <a href={link} target="_blank" rel="noopener noreferrer" className="aspect-video w-full overflow-hidden bg-slate-100 block">
+    <div className="aspect-video w-full overflow-hidden bg-slate-100">
       <img src={`/projects/${projectId}/1.png`} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-    </a>
+    </div>
     <div className="p-8">
       <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">{category}</p>
       <h3 className="text-2xl font-display font-bold mb-4">{title}</h3>
@@ -210,21 +212,14 @@ const ProjectCard = ({ title, category, projectId, link, advantages }: { title: 
           </li>
         ))}
       </ul>
-      <a 
-        href={link} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-accent transition-colors"
-        onClick={e => e.stopPropagation()}
-      >
-        Смотреть фото проекта <ChevronRight className="w-4 h-4" />
-      </a>
+      <div className="flex items-center gap-2 text-sm font-medium text-slate-900/70 group-hover:text-accent transition-colors">
+        Смотреть проект <ChevronRight className="w-4 h-4" />
+      </div>
     </div>
-  </motion.div>
+  </motion.a>
 );
 
 const Work = () => {
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   return (
     <section id="work" className="py-32 px-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
@@ -243,7 +238,6 @@ const Work = () => {
           projectId="AIContentMaker"
           link="https://aicontent.aimaks.ru"
           advantages={["Автоматизация генерации контента", "Снижение маркетинговых затрат", "Рост вовлеченности аудитории"]}
-          onOpenModal={() => setSelectedProjectId("AIContentMaker")}
         />
         <ProjectCard 
           title="Нейро-продавец" 
@@ -251,7 +245,6 @@ const Work = () => {
           projectId="NeuroSeller"
           link="https://b2bsale.aimaks.ru"
           advantages={["Определение решений для бизнеса", "Повышение конверсии продаж", "Анализ покупательского поведения"]}
-          onOpenModal={() => setSelectedProjectId("NeuroSeller")}
         />
         <ProjectCard 
           title="SellSmart - AI Аукцион" 
@@ -259,16 +252,8 @@ const Work = () => {
           projectId="SellSmart"
           link="https://auction.aimaks.ru"
           advantages={["Динамическое ценообразование", "Автоматизация управления запасами", "Точное прогнозирование спроса"]}
-          onOpenModal={() => setSelectedProjectId("SellSmart")}
         />
       </div>
-      {selectedProjectId && (
-        <ProjectModal 
-          projectId={selectedProjectId} 
-          isOpen={!!selectedProjectId} 
-          onClose={() => setSelectedProjectId(null)} 
-        />
-      )}
     </section>
   );
 };
@@ -450,26 +435,64 @@ export default function App() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const phone = formData.get('phone') as string;
+    const telegram = formData.get('telegram') as string;
+    const description = formData.get('description') as string;
+
+    // Client-side validation in Russian
+    const errors: Record<string, string> = {};
+    if (!name || !name.trim()) {
+      errors.name = 'Пожалуйста, введите ваше имя';
+    }
+    if (!email || !email.trim()) {
+      errors.email = 'Пожалуйста, введите ваш email';
+    } else {
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(email)) {
+        errors.email = 'Пожалуйста, введите корректный email-адрес';
+      }
+    }
+    if (!phone || !phone.trim()) {
+      errors.phone = 'Пожалуйста, введите номер телефона';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      // Focus first error field
+      const firstErrorKey = Object.keys(errors)[0];
+      const errorField = form.elements.namedItem(firstErrorKey) as HTMLInputElement | null;
+      if (errorField) errorField.focus();
+      return;
+    }
+
+    setFormErrors({});
     setStatus('submitting');
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
     
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ name, email, phone, telegram, description }),
       });
-      if (res.ok) setStatus('success');
-      else setStatus('idle');
+      if (res.ok) {
+        setStatus('success');
+      } else {
+        setStatus('idle');
+      }
     } catch (err) {
       console.error(err);
       setStatus('idle');
     }
   };
+
   return (
     <div className="min-h-screen selection:bg-accent selection:text-black relative">
       {/* Background Image Setup */}
@@ -509,37 +532,29 @@ export default function App() {
                       type="text" 
                       name="name"
                       placeholder="Ваше имя" 
-                      required
-                      onInvalid={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        if (target.validity.valueMissing) target.setCustomValidity('Пожалуйста, заполните это поле');
-                        else target.setCustomValidity('Пожалуйста, исправьте ошибку');
-                      }}
-                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
-                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                      className={cn(
+                        "w-full bg-slate-900/5 border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
+                        formErrors.name ? "border-red-500/50 focus:border-red-500 focus:ring-red-500" : "border-slate-900/10 focus:border-accent focus:ring-accent"
+                      )}
                     />
+                    {formErrors.name && (
+                      <p className="text-red-500 text-xs mt-1 ml-1 font-medium">{formErrors.name}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-900/90 ml-1">Email <span className="text-accent">*</span></label>
                     <input 
-                      type="text" 
+                      type="email" 
                       name="email"
                       placeholder="ваш@email.com" 
-                      required
-                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                      onInvalid={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        if (target.validity.valueMissing) {
-                          target.setCustomValidity('Пожалуйста, заполните это поле');
-                        } else if (target.validity.patternMismatch) {
-                          target.setCustomValidity('Пожалуйста, введите корректный email');
-                        } else {
-                          target.setCustomValidity('Пожалуйста, введите корректные данные');
-                        }
-                      }}
-                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
-                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                      className={cn(
+                        "w-full bg-slate-900/5 border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
+                        formErrors.email ? "border-red-500/50 focus:border-red-500 focus:ring-red-500" : "border-slate-900/10 focus:border-accent focus:ring-accent"
+                      )}
                     />
+                    {formErrors.email && (
+                      <p className="text-red-500 text-xs mt-1 ml-1 font-medium">{formErrors.email}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-900/90 ml-1">Телефон <span className="text-accent">*</span></label>
@@ -547,15 +562,14 @@ export default function App() {
                       type="tel" 
                       name="phone"
                       placeholder="+7 (999) 000-00-00" 
-                      required
-                      onInvalid={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        if (target.validity.valueMissing) target.setCustomValidity('Пожалуйста, заполните это поле');
-                        else target.setCustomValidity('Пожалуйста, исправьте ошибку');
-                      }}
-                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
-                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                      className={cn(
+                        "w-full bg-slate-900/5 border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
+                        formErrors.phone ? "border-red-500/50 focus:border-red-500 focus:ring-red-500" : "border-slate-900/10 focus:border-accent focus:ring-accent"
+                      )}
                     />
+                    {formErrors.phone && (
+                      <p className="text-red-500 text-xs mt-1 ml-1 font-medium">{formErrors.phone}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-900/90 ml-1">Telegram</label>
