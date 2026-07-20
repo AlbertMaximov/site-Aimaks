@@ -31,7 +31,8 @@ async function startServer() {
     const smtpPort = process.env.SMTP_PORT;
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    const smtpFrom = process.env.SMTP_FROM || "no-reply@aimaks.ru";
+    // For strict SMTP hosts (like Beget), sender address must match SMTP user.
+    const smtpFrom = process.env.SMTP_FROM || smtpUser || "info@aimaks.ru";
 
     // Build the email body
     const emailSubject = `Новая заявка от ${name || "клиента"}`;
@@ -89,31 +90,44 @@ ${description || "Не указано"}
 
     if (smtpHost && smtpUser && smtpPass) {
       try {
+        const portNum = parseInt(smtpPort || "465");
+        const isSecure = portNum === 465;
+
+        console.log(`Connecting to SMTP: ${smtpHost}:${portNum} (secure: ${isSecure}) with user ${smtpUser}`);
+
         const transporter = nodemailer.createTransport({
           host: smtpHost,
-          port: parseInt(smtpPort || "587"),
-          secure: smtpPort === "465",
+          port: portNum,
+          secure: isSecure,
           auth: {
             user: smtpUser,
             pass: smtpPass,
           },
+          tls: {
+            rejectUnauthorized: false // Avoid SSL certificate handshake failures
+          }
         });
 
-        await transporter.sendMail({
+        const mailOptions = {
           from: `"${name || "Aimaks Contact Form"}" <${smtpFrom}>`,
           to: "info@aimaks.ru",
+          replyTo: email || undefined,
           subject: emailSubject,
           text: emailText,
           html: emailHtml,
-        });
+        };
 
-        console.log("Email successfully sent via SMTP to info@aimaks.ru");
+        console.log(`Sending email option - From: ${mailOptions.from}, To: ${mailOptions.to}, Reply-To: ${mailOptions.replyTo}`);
+
+        const info = await transporter.sendMail(mailOptions);
+
+        console.log("Email successfully sent via SMTP:", info.messageId);
         return res.json({ message: "Заявка успешно отправлена!" });
       } catch (err: any) {
         console.error("Failed to send email via SMTP:", err);
-        return res.json({ 
-          message: "Заявка успешно отправлена! (Заметка: отправка по SMTP не удалась, подробности в логах)", 
-          warning: err.message 
+        return res.status(500).json({ 
+          message: "Произошла ошибка при отправке заявки через SMTP.", 
+          error: err.message 
         });
       }
     } else {
