@@ -103,8 +103,12 @@ ${description || "Не указано"}
             user: smtpUser,
             pass: smtpPass,
           },
+          connectionTimeout: 5000, // 5 seconds connection timeout
+          greetingTimeout: 5000,   // 5 seconds greeting timeout
+          socketTimeout: 5000,     // 5 seconds socket timeout
           tls: {
-            rejectUnauthorized: false // Avoid SSL certificate handshake failures
+            rejectUnauthorized: false, // Avoid SSL certificate handshake failures
+            minVersion: "TLSv1.2"
           }
         });
 

@@ -436,6 +436,7 @@ export default function App() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -474,6 +475,7 @@ export default function App() {
     }
 
     setFormErrors({});
+    setSubmitError(null);
     setStatus('submitting');
     
     try {
@@ -485,10 +487,13 @@ export default function App() {
       if (res.ok) {
         setStatus('success');
       } else {
+        const errorData = await res.json().catch(() => ({}));
+        setSubmitError(errorData.message || 'Ошибка сервера при отправке. Пожалуйста, попробуйте позже.');
         setStatus('idle');
       }
     } catch (err) {
       console.error(err);
+      setSubmitError('Не удалось отправить запрос. Пожалуйста, проверьте интернет-соединение.');
       setStatus('idle');
     }
   };
@@ -590,6 +595,11 @@ export default function App() {
                     className="w-full bg-white border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
                   ></textarea>
                 </div>
+                {submitError && (
+                  <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm font-medium text-center">
+                    {submitError}
+                  </div>
+                )}
                 <button 
                   type="submit" 
                   disabled={status === 'submitting'}
