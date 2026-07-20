@@ -487,13 +487,29 @@ export default function App() {
       if (res.ok) {
         setStatus('success');
       } else {
-        const errorData = await res.json().catch(() => ({}));
-        setSubmitError(errorData.message || 'Ошибка сервера при отправке. Пожалуйста, попробуйте позже.');
+        let errorMessage = `Ошибка сервера (Код: ${res.status})`;
+        try {
+          const contentType = res.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await res.json();
+            errorMessage = errorData.message || (errorData.error ? `${errorMessage}: ${errorData.error}` : errorMessage);
+          } else {
+            const textText = await res.text();
+            if (res.status === 404) {
+              errorMessage = 'Ошибка 404: Адрес /api/contact не найден. Пожалуйста, убедитесь, что на вашем сервере запущен Node.js backend (server.ts), а не только статические файлы.';
+            } else if (textText && textText.length < 200) {
+              errorMessage = `Ошибка ${res.status}: ${textText}`;
+            }
+          }
+        } catch (e) {
+          console.error('Error parsing response:', e);
+        }
+        setSubmitError(errorMessage);
         setStatus('idle');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setSubmitError('Не удалось отправить запрос. Пожалуйста, проверьте интернет-соединение.');
+      setSubmitError(`Не удалось отправить запрос. Ошибка соединения: ${err.message || 'сеть недоступна'}.`);
       setStatus('idle');
     }
   };
