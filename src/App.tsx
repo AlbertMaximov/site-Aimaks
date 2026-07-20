@@ -512,7 +512,7 @@ export default function App() {
         {/* CTA Section */}
         <section id="contact" className="py-32 px-6">
           <div className="max-w-4xl mx-auto glass rounded-[40px] p-8 md:p-16 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full bg-accent/5 -z-10" />
+            <div className="absolute top-0 left-0 w-full h-full bg-slate-950/30 -z-10" />
             <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">ГОТОВЫ НАЧАТЬ <br /> ВАШ ПУТЬ В ИИ?</h2>
             <p className="text-slate-900/70 mb-12 max-w-xl mx-auto text-lg">
               Оставьте заявку, и наша команда свяжется с вами для обсуждения проекта.
@@ -533,7 +533,7 @@ export default function App() {
                       name="name"
                       placeholder="Ваше имя" 
                       className={cn(
-                        "w-full bg-slate-900/5 border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
+                        "w-full bg-white border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
                         formErrors.name ? "border-red-500/50 focus:border-red-500 focus:ring-red-500" : "border-slate-900/10 focus:border-accent focus:ring-accent"
                       )}
                     />
@@ -548,7 +548,7 @@ export default function App() {
                       name="email"
                       placeholder="ваш@email.com" 
                       className={cn(
-                        "w-full bg-slate-900/5 border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
+                        "w-full bg-white border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
                         formErrors.email ? "border-red-500/50 focus:border-red-500 focus:ring-red-500" : "border-slate-900/10 focus:border-accent focus:ring-accent"
                       )}
                     />
@@ -563,7 +563,7 @@ export default function App() {
                       name="phone"
                       placeholder="+7 (999) 000-00-00" 
                       className={cn(
-                        "w-full bg-slate-900/5 border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
+                        "w-full bg-white border rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:ring-1 transition-all",
                         formErrors.phone ? "border-red-500/50 focus:border-red-500 focus:ring-red-500" : "border-slate-900/10 focus:border-accent focus:ring-accent"
                       )}
                     />
@@ -577,7 +577,7 @@ export default function App() {
                       type="text" 
                       name="telegram"
                       placeholder="@ваш_ник" 
-                      className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                      className="w-full bg-white border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
                     />
                   </div>
                 </div>
@@ -587,7 +587,7 @@ export default function App() {
                     rows={3} 
                     name="description"
                     placeholder="Опишите вашу задачу..." 
-                    className="w-full bg-slate-900/5 border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
+                    className="w-full bg-white border border-slate-900/10 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-900/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
                   ></textarea>
                 </div>
                 <button 
